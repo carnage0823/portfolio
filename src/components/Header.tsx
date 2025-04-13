@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "motion/react";
 
 function Header() {
-  let yoe = calculateExperience(2022, 8);
+  const yoe = calculateExperience(2022, 8);
   function calculateExperience(startYear: number, startMonth: number) {
     const startDate = new Date(startYear, startMonth - 1); // Month is 0-indexed
     const currentDate = new Date();

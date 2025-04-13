@@ -64,7 +64,7 @@ function About() {
             transition={{ duration: 0.8, delay: 1 }}
             className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl"
           >
-            {infoList.map(({ icon, iconDark, description, title }, index) => (
+            {infoList.map(({ icon, description, title }, index) => (
               <motion.li
                 whileHover={{ scale: 1.05 }}
                 className="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer 

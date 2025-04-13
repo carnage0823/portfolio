@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
-import { isMobile, isTablet, isDesktop } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 
 const Footer = () => {
   return (
@@ -12,9 +12,9 @@ const Footer = () => {
       </div>
       <a
         href={
-          isMobile || isTablet
-            ? `mailto:rohitsharma233294@gmail.com`
-            : `https://mail.google.com/mail/?view=cm&fs=1&to=rohitsharma233294@gmail.com`
+          isDesktop
+            ? `https://mail.google.com/mail/?view=cm&fs=1&to=rohitsharma233294@gmail.com`
+            : `mailto:rohitsharma233294@gmail.com`
         }
         target="_blank"
       >
