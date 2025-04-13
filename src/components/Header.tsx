@@ -3,19 +3,20 @@ import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { motion } from "motion/react";
 
+export function calculateExperience(startYear: number, startMonth: number) {
+  const startDate = new Date(startYear, startMonth - 1); // Month is 0-indexed
+  const currentDate = new Date();
+
+  const diffInMonths =
+    (currentDate.getFullYear() - startDate.getFullYear()) * 12 +
+    (currentDate.getMonth() - startDate.getMonth());
+
+  const experience = Math.floor((diffInMonths / 12) * 10) / 10; // Round down to 1 decimal
+  return experience;
+}
+
 function Header() {
   const yoe = calculateExperience(2022, 8);
-  function calculateExperience(startYear: number, startMonth: number) {
-    const startDate = new Date(startYear, startMonth - 1); // Month is 0-indexed
-    const currentDate = new Date();
-
-    const diffInMonths =
-      (currentDate.getFullYear() - startDate.getFullYear()) * 12 +
-      (currentDate.getMonth() - startDate.getMonth());
-
-    const experience = Math.floor((diffInMonths / 12) * 10) / 10; // Round down to 1 decimal
-    return experience;
-  }
 
   return (
     <div

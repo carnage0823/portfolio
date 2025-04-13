@@ -2,8 +2,11 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { assets, infoList, toolsData } from "@/assets/assets";
+import { calculateExperience } from "./Header";
 
 function About() {
+  const yoe = calculateExperience(2022, 8);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -54,7 +57,7 @@ function About() {
           className="flex-1"
         >
           <p className="mb-10 max-w-2xl font-Ova">
-            I am a passionate Full-Stack Developer with over 2 years of hands-on
+            I am a passionate Full-Stack Developer with {yoe}+ years of hands-on
             experience in building dynamic, scalable, and user- friendly
             applications.
           </p>
