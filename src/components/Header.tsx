@@ -39,7 +39,7 @@ function Header() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex items-end gap-2 text-xl md:text-2xl mb-3 font-Ova"
       >
-        H! I'm Rohit Sharma{" "}
+        {"H! I'm Rohit Sharma"}
         <Image src={assets.hand_icon} alt="profile" className="w-6" />
       </motion.h3>
       <motion.h1

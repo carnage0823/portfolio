@@ -1,31 +1,38 @@
 import { assets } from "@/assets/assets";
 import { motion } from "motion/react";
 import Image from "next/image";
-import React from "react";
+import React, { FormEvent } from "react";
 
 const Contact = () => {
   const [result, setResult] = React.useState("");
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setResult("Sending....");
-    const formData = new FormData(event.target);
+    setResult("Sending...");
+
+    const form = event.currentTarget; // Safer than event.target
+    const formData = new FormData(form);
 
     formData.append("access_key", "ea0c1504-42d9-455b-bc1c-2ba36b56dc45");
 
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      setResult("Form Submitted Successfully");
-      event.target.reset();
-    } else {
-      console.log("Error", data);
-      setResult(data.message);
+      if (data.success) {
+        setResult("Form Submitted Successfully");
+        form.reset();
+      } else {
+        console.error("Error", data);
+        setResult(data.message);
+      }
+    } catch (error) {
+      console.error("Submission failed", error);
+      setResult("Something went wrong. Please try again.");
     }
   };
 
@@ -61,8 +68,9 @@ const Contact = () => {
         transition={{ duration: 0.5, delay: 0.7 }}
         className="text-center max-w-2xl mx-auto mt-5 mb-12 font-Ova"
       >
-        I'd love to hear from you! if you have any questions, comments, or
-        feedback please use the form below.
+        {
+          "I'd love to hear from you! if you have any questions, comments, or feedback please use the form below."
+        }
       </motion.p>
       <motion.form
         initial={{ opacity: 0 }}
