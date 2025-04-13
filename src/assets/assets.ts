@@ -1,5 +1,5 @@
 "use client";
-import { isDesktop } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 import user_image from "./profile-img.jpeg";
 import code_icon from "./code-icon.png";
 import code_icon_dark from "./code-icon-dark.png";
@@ -107,9 +107,10 @@ export const workData = [
     title: "WhatsApp ChatBot",
     description: "Share4earth",
     bgImage: "/work-3.png",
-    link: isDesktop
-      ? "https://www.share4earth.team/"
-      : "https://wa.me/+919028780372?text=Hii",
+    link:
+      isMobile || isTablet
+        ? "https://wa.me/+919028780372?text=Hii"
+        : "https://www.share4earth.team/",
   },
   {
     title: "Mobile App Backend",
