@@ -1,7 +1,7 @@
 import { assets } from "@/assets/assets";
 import { motion } from "motion/react";
 import Image from "next/image";
-import React,  from "react";
+import React from "react";
 
 const Contact = () => {
   const [result, setResult] = React.useState("");
