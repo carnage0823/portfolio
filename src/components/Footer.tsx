@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
-import { isMobile, isTablet } from "react-device-detect";
 
 const Footer = () => {
   return (
@@ -10,14 +9,7 @@ const Footer = () => {
       <div className="text-center">
         <h1 className="text-2xl font-semibold font-Ova">Rohit.</h1>
       </div>
-      <a
-        href={
-          isMobile || isTablet
-            ? `mailto:rohitsharma233294@gmail.com`
-            : `https://mail.google.com/mail/?view=cm&fs=1&to=rohitsharma233294@gmail.com`
-        }
-        target="_blank"
-      >
+      <a href="mailto:rohitsharma233294@gmail.com">
         <div className="w-max flex items-center gap-2 mx-auto mb-2">
           <Image src={assets.mail_icon} alt="" className="w-6" />
           rohitsharma233294@gmail.com
