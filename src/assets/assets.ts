@@ -1,5 +1,5 @@
 "use client";
-import user_image from "./profile-img.jpeg";
+import user_image from "./user-image.jpeg";
 import code_icon from "./code-icon.png";
 import code_icon_dark from "./code-icon-dark.png";
 import edu_icon from "./edu-icon.png";
