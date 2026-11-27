@@ -1,115 +1,98 @@
-import React from "react";
+"use client";
+import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
-import { motion } from "motion/react";
-import { assets, infoList, toolsData } from "@/assets/assets";
-import { calculateExperience } from "./Header";
+import { useRef } from "react";
+import photo from "@/assets/user-image.jpeg";
+import { education, highlights, profile } from "@/data/portfolio";
+import { Reveal, SectionHeading, useSpotlight } from "./ui";
 
-function About() {
-  const yoe = calculateExperience(2022, 8);
+export default function About() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const spot = useSpotlight<HTMLDivElement>();
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-      id="about"
-      className="w-full px-[12%] py-20 scroll-mt-20"
-    >
-      <motion.h4
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="text-center mb-2 text-lg font-Ova"
-      >
-        Introduction
-      </motion.h4>
-      <motion.h2
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="text-center text-5xl font-Ova"
-      >
-        About Me
-      </motion.h2>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        className="flex w-full flex-col lg:flex-row items-center gap-20 my-20"
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="w-64 sm:w-80 rounded-3xl max-w-none"
-        >
-          <Image
-            src={assets.user_image}
-            alt="user"
-            className="w-full rounded-3xl"
-          />
-        </motion.div>
+    <section id="about" className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <SectionHeading
+        index="01"
+        eyebrow="About"
+        title={
+          <>
+            Engineering products that are <span className="text-gradient">reliable, fast</span> and a joy to use.
+          </>
+        }
+      />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex-1"
-        >
-          <p className="mb-10 max-w-2xl font-Ova">
-            I am a passionate Full-Stack Developer with {yoe}+ years of hands-on
-            experience in building dynamic, scalable, and user- friendly
-            applications.
-          </p>
-          <motion.ul
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl"
-          >
-            {infoList.map(({ icon, description, title }, index) => (
-              <motion.li
-                whileHover={{ scale: 1.05 }}
-                className="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer 
-                hover:bg-lightHover hover:-translate-y-1 duration-500 hover:shadow-black"
-                key={index}
-              >
-                <Image src={icon} alt="title" className="w-7 mt-3" />
-                <h3 className="my-4 font-semibold text-gray-700">{title}</h3>
-                <p className="text-gray-600 text-sm">{description}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
-          <motion.h4
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1.3 }}
-            className="my-6 text-gray-700 font-Ova"
-          >
-            Tools I use
-          </motion.h4>
-          <motion.ul
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.5 }}
-            className="flex items-center gap-3 sm:gap-5 "
-          >
-            {toolsData.map((tool, index) => (
-              <motion.li
-                whileHover={{ scale: 1.1 }}
-                className="flex items-center justify-center w-12 sm:w-14 
-                aspect-square border border-gray-400 rounded-lg cursor-pointer
-                hover:-translate-y-1 duration-500"
-                key={index}
-              >
-                <Image src={tool} alt="" className="w-5 sm:w-7" />
-              </motion.li>
-            ))}
-          </motion.ul>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+      <div ref={ref} className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <Reveal className="relative">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10">
+            <motion.div style={{ y: imgY }} className="scale-[1.15]">
+              <Image
+                src={photo}
+                alt={`${profile.name} portrait`}
+                placeholder="blur"
+                className="aspect-[4/5] w-full object-cover object-top"
+              />
+            </motion.div>
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6">
+              <p className="font-mono text-xs uppercase tracking-widest text-accent-2">Currently</p>
+              <p className="mt-1 font-display text-xl font-semibold text-white">Building at Protean eGov</p>
+            </div>
+          </div>
+          <div className="absolute -bottom-6 -right-6 -z-10 size-40 rounded-3xl bg-gradient-to-br from-accent/40 to-accent-2/30 blur-3xl" />
+        </Reveal>
+
+        <div className="flex flex-col justify-center">
+          <Reveal>
+            <p className="text-xl md:text-2xl leading-relaxed text-zinc-200">{profile.summary}</p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-6 text-lg leading-relaxed text-zinc-400">
+              I enjoy owning features end-to-end — from database schema and APIs to pixel-perfect,
+              accessible interfaces — and I&apos;m comfortable working in regulated domains where security,
+              compliance and correctness matter.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.2}>
+            <ul className="mt-10 grid grid-cols-2 gap-3">
+              {highlights.map((h) => (
+                <li key={h} className="flex items-center gap-3 text-sm text-zinc-300">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+                    <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth={3}>
+                      <path d="m5 12 5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={0.3}>
+            <div
+              onMouseMove={spot}
+              className="spotlight-card mt-10 flex items-start gap-5 rounded-2xl p-6"
+            >
+              <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent/20 to-accent-2/20 text-accent-2">
+                <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <path d="M22 10 12 5 2 10l10 5 10-5Z M6 12v5c3 2 9 2 12 0v-5" strokeLinejoin="round" strokeLinecap="round" />
+                </svg>
+              </span>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-widest text-zinc-500">Education</p>
+                <p className="mt-1 font-display text-lg font-semibold text-white">{education.degree}</p>
+                <p className="text-zinc-400">{education.school}</p>
+                <p className="mt-1 font-mono text-xs text-zinc-500">
+                  {education.period} · {education.location}
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
   );
 }
-
-export default About;

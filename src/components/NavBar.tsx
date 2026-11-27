@@ -1,149 +1,147 @@
-import { assets } from "@/assets/assets";
-import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+"use client";
+import { AnimatePresence, motion } from "motion/react";
+import React, { useEffect, useState } from "react";
+import { navLinks, profile } from "@/data/portfolio";
 
-function NavBar() {
-  const [isScroll, setIsScroll] = React.useState<boolean>(false);
-  const sideMenuRef = useRef<HTMLUListElement>(null);
-  const OpenMenu = () => {
-    if (sideMenuRef.current !== null) {
-      sideMenuRef.current.style.transform = "translate(-16rem";
-    }
-  };
+export default function NavBar({ ready }: { ready: boolean }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
 
-  const closeMenu = () => {
-    if (sideMenuRef.current !== null) {
-      sideMenuRef.current.style.transform = "translate(16rem";
-    }
-  };
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      if (scrollY > 50) {
-        setIsScroll(true);
-      } else {
-        setIsScroll(false);
-      }
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`);
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    navLinks.forEach((l) => {
+      const el = document.querySelector(l.href);
+      if (el) io.observe(el);
     });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      io.disconnect();
+    };
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
   return (
-    <div>
-      <div className="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%]">
-        <Image src={assets.header_bg_color} alt="blur" className="w-full " />
-      </div>
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={ready ? { y: 0, opacity: 1 } : undefined}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
+      className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4"
+    >
       <nav
-        className={`w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50 
-        ${isScroll && "shadow-sm backdrop-blur-lg"}`}
-        style={{
-          backgroundColor: isScroll ? "rgb(255,255,255,0.5)" : undefined,
-        }}
+        className={`flex w-full max-w-6xl items-center justify-between rounded-2xl px-5 py-3 transition-all duration-500 ${
+          scrolled
+            ? "border border-white/10 bg-ink/70 shadow-2xl shadow-black/40 backdrop-blur-xl"
+            : "border border-transparent"
+        }`}
       >
-        <a href="#top">
-          {/* <Image
-            src={assets.logo}
-            className="w-28 cursor-pointer mr-14"
-            alt="logo"
-          /> */}
-          <h1 className="text-6xl font-semibold font-Ova">Rohit.</h1>
+        <a href="#top" className="group flex items-center gap-2.5" aria-label="Home">
+          <span className="relative grid size-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-2 font-display text-sm font-bold text-ink">
+            RS
+          </span>
+          <span className="font-display text-lg font-semibold text-white">
+            {profile.firstName}
+            <span className="text-accent-2">.</span>
+          </span>
         </a>
-        <ul
-          className={`hidden md:flex items-center gap-6 lag:gap-8 rounded-full px-12 py-3
-           ${isScroll ? "" : "shadow-sm"}`}
-          style={{
-            backgroundColor: isScroll ? undefined : "rgb(255,255,255,0.5)",
-          }}
-        >
-          <li>
-            <a className="font-Ova" href="#top">
-              Home
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#about">
-              About me
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#services">
-              Services
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#work">
-              My Work
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#contact">
-              Contact Me
-            </a>
-          </li>
+
+        <ul className="hidden md:flex items-center gap-1">
+          {navLinks.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
+                  active === l.href ? "text-white" : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                {active === l.href && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-white/[0.07] border border-white/10"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+                {l.label}
+              </a>
+            </li>
+          ))}
         </ul>
 
-        <div className="flex items-center gap-4">
-          {/* <button>
-            <Image src={assets.moon_icon} alt="moon" className="w-6" />
-          </button> */}
+        <div className="flex items-center gap-3">
           <a
-            className="hidden lg:flex items-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Ova"
-            href="#contact"
+            href={profile.resume}
+            download
+            className="hidden sm:inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-ink transition hover:bg-zinc-200"
           >
-            Contact
-            <Image src={assets.arrow_icon} className="w-3" alt="arrow" />
+            Resume
+            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M12 4v12m0 0-5-5m5 5 5-5M5 20h14" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </a>
-
-          <button onClick={OpenMenu} className="block md:hidden ml-3">
-            <Image
-              src={assets.menu_black}
-              alt="menu"
-              className="w-6 cursor-pointer"
-            />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden grid size-10 place-items-center rounded-xl border border-white/10 text-white"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+          >
+            <div className="relative h-3 w-5">
+              <span className={`absolute left-0 h-0.5 w-5 bg-current transition-all ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+              <span className={`absolute left-0 h-0.5 w-5 bg-current transition-all ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+            </div>
           </button>
         </div>
-
-        {/* {----Mobile Menu---} */}
-
-        <ul
-          ref={sideMenuRef}
-          className="flex md:hidden flex-col gap-4
-         py-20 px-10 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500"
-        >
-          <div className="absolute right-6 top-6">
-            <Image
-              src={assets.close_black}
-              onClick={closeMenu}
-              alt="cross"
-              className="w-5 cursor-pointer"
-            />
-          </div>
-          <li>
-            <a className="font-Ova" href="#top" onClick={closeMenu}>
-              Home
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#about" onClick={closeMenu}>
-              About me
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#services" onClick={closeMenu}>
-              Services
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#work" onClick={closeMenu}>
-              My Work
-            </a>
-          </li>
-          <li>
-            <a className="font-Ova" href="#contact" onClick={closeMenu}>
-              Contact Me
-            </a>
-          </li>
-        </ul>
       </nav>
-    </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
+            animate={{ clipPath: "circle(150% at calc(100% - 40px) 40px)" }}
+            exit={{ clipPath: "circle(0% at calc(100% - 40px) 40px)" }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 -z-10 flex flex-col justify-center bg-ink-2 px-8 md:hidden"
+          >
+            <ul className="space-y-2">
+              {navLinks.map((l, i) => (
+                <motion.li
+                  key={l.href}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.06 }}
+                >
+                  <a
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-baseline gap-4 py-2 font-display text-4xl font-semibold text-white"
+                  >
+                    <span className="font-mono text-sm text-accent">0{i + 1}</span>
+                    {l.label}
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+            <a
+              href={profile.resume}
+              download
+              className="mt-10 inline-flex w-max items-center gap-2 rounded-full bg-white px-6 py-3 font-medium text-ink"
+            >
+              Download Resume
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   );
 }
-
-export default NavBar;
